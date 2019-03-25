@@ -52,17 +52,17 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_scale.git"
 class Scale:
     """Interface to a DYMO postal scale.
     """
-    def __init__(self, usb_pin, units_pin, timeout=1.0):
+    def __init__(self, data_pin, units_pin, timeout=1.0):
         """Sets up a DYMO postal scale.
-        :param ~pulseio.PulseIn usb_pin: The usb data pin from the Dymo scale.
-        :param ~digitalio.DigitalInOut units_pin: The grams/oz pin from the Dymo scale.
+        :param ~pulseio.PulseIn data_pin: The data pin from the Dymo scale.
+        :param ~digitalio.DigitalInOut units_pin: The grams/oz button from the Dymo scale.
         :param double timeout: The timeout, in seconds.
         """
         self.timeout = timeout
         # set up the toggle pin
         self.units_pin = DigitalInOut(units_pin)
         self.units_pin.switch_to_output()
-        self.dymo = PulseIn(usb_pin, maxlen=96, idle_state=True)
+        self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
         # units we're measuring
         self.units = None
         # is the measurement stable?
@@ -70,8 +70,8 @@ class Scale:
         # the weight of what we're measuring
         self.weight = None
 
-    def toggle_unit_pin(self, switch_unit=False):
-        """Toggles the units button on the dymo.
+    def toggle_unit_button(self, switch_unit=False):
+        """Toggles the unit button on the dymo.
         :param bool switch_unit: Simulates pressing the unit button.
         """
         if switch_unit: # press the toggle button once
@@ -80,13 +80,11 @@ class Scale:
             self.units_pin.value = 0
             time.sleep(2)
         else: # toggle and preserve current unit state
-            #pylint-ignore unused-variable
             for toggle in range(2):
                 self.units_pin.value = 1
                 time.sleep(2)
                 self.units_pin.value = 0
                 time.sleep(2)
-
 
     def get_scale_data(self):
         """Read a pulse of SPI data on a pin that corresponds to DYMO scale
@@ -98,10 +96,8 @@ class Scale:
         self.dymo.resume()
         while len(self.dymo) < 35:
             if (time.monotonic() - timestamp) > self.timeout:
-                raise RuntimeError("Timed out waiting for data")
+                raise RuntimeError("Timed out waiting for data - is the scale turned on?")
         self.dymo.pause()
-        # check the scale's state
-        self.check_scale()
         bits = [0] * 96   # there are 12 bytes = 96 bits of data
         bit_idx = 0       # we will count a bit at a time
         bit_val = False   # first pulses will be LOW
@@ -125,10 +121,11 @@ class Scale:
         # do some very basic data checking
         if data_bytes[0] != 3 or data_bytes[1] != 3 or data_bytes[7] != 4:
             raise RuntimeError("Bad data capture")
+
         if data_bytes[8] != 0x1C or data_bytes[9] != 0 or data_bytes[10] \
         or data_bytes[11] != 0:
             raise RuntimeError("Bad data capture")
-
+        # parse out the data_bytes
         self.stable = data_bytes[2] & 0x4
         self.units = data_bytes[3]
         self.weight = data_bytes[5] + (data_bytes[6] << 8)
