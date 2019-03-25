@@ -13,7 +13,7 @@ Introduction
     :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_DymoScale
     :alt: Build Status
 
-CircuitPython interface for DYMO scales.
+CircuitPython interface for `DYMO <http://www.dymo.com/en-US>`_ postage scales.
 
 
 Dependencies
@@ -53,7 +53,30 @@ To install in a virtual environment in your current project:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
+Initialize the scale by passing it a data pin and a pin to toggle the units button:
+
+.. code-block:: python
+
+    dymo = Scale(board.D3, board.D4)
+
+Obtain data from the scale:
+
+.. code-block:: python
+
+    dymo.get_scale_data()
+
+To toggle between units (simulate a button press):
+
+.. code-block:: python
+
+    dymo.toggle_unit_pin(switch_unit=True)
+
+To toggle the unit button, but preserve the unit displayed:
+
+.. code-block:: python
+
+    dymo.toggle_unit_pin(switch_unit=True)
+
 
 Contributing
 ============
