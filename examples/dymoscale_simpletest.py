@@ -13,9 +13,9 @@ while True:
     print(text)
 
     # to avoid sleep mode, we'll toggle the units pin.
-    
+
     # if we don't want to switch the unit on the next read:
     dymo.toggle_unit_button()
-    
+
     # if we want to switch the measurement unit on the next read
     # dymo.toggle_unit_button(switch_unit=True)
