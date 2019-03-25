@@ -11,5 +11,11 @@ while True:
     if dymo.units == 'g':
         text = "%0.1f g" % dymo.weight
     print(text)
-    # to avoid sleep mode, we'll toggle the units pin
+
+    # to avoid sleep mode, we'll toggle the units pin.
+
+    # if we don't want to switch the unit on the next read:
     dymo.toggle_unit_pin()
+
+    # if we want to switch the measurement unit on the next read
+    # dymo.toggle_unit_pin(switch_unit=True)
