@@ -69,13 +69,13 @@ To toggle between units (simulate a button press):
 
 .. code-block:: python
 
-    dymo.toggle_unit_pin(switch_unit=True)
+    dymo.toggle_unit_button(switch_unit=True)
 
 To toggle the unit button, but preserve the unit displayed:
 
 .. code-block:: python
 
-    dymo.toggle_unit_pin(switch_unit=True)
+    dymo.toggle_unit_button(switch_unit=True)
 
 
 Contributing

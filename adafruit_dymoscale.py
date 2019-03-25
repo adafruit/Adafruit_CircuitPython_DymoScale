@@ -138,5 +138,5 @@ class Scale:
                 print('Tare - press the tare button to reset the scale to zero.')
             self.weight *= 10 ** data_bytes[4]
             self.units = "oz"
-        if self.units == GRAMS:
+        elif self.units == GRAMS:
             self.units = "g"
