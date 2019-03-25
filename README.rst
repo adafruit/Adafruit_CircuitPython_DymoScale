@@ -75,7 +75,7 @@ To toggle the unit button, but preserve the unit displayed:
 
 .. code-block:: python
 
-    dymo.toggle_unit_button(switch_unit=True)
+    dymo.toggle_unit_button()
 
 
 Contributing
