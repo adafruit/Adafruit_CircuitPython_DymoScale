@@ -57,19 +57,23 @@ Initialize the scale by passing it a data pin and a pin to toggle the units butt
 
 .. code-block:: python
 
-    dymo = Scale(board.D3, board.D4)
+    # initialize the dymo scale
+    units_pin = digitalio.DigitalInOut(board.D3)
+    units_pin.switch_to_output()
+    dymo = adafruit_dymoscale.DYMOScale(board.D4, units_pin)
 
 Get the item's weight from the scale:
 
 .. code-block:: python
 
-    dymo.weight
+    reading = dymo.weight
+    print(reading.weight)
 
 Get the item's units from the scale:
 
 .. code-block:: python
 
-    dymo.units
+    print(reading.units)
 
 To toggle between units (simulate a button press):
 
