@@ -39,7 +39,6 @@ Implementation Notes
 
 import time
 from pulseio import PulseIn
-from digitalio import DigitalInOut
 from micropython import const
 
 OUNCES = const(0x0B)   # data in weight is in ounces
@@ -49,7 +48,14 @@ PULSE_WIDTH = 72.5
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_scale.git"
 
-class Scale:
+# pylint: disable=too-few-public-methods
+class ScaleReading:
+    """Dymo Scale Data"""
+    units = None           # what units we're measuring
+    stable = None          # is the measurement stable?
+    weight = None          # the weight!
+
+class DYMOScale:
     """Interface to a DYMO postal scale.
     """
     def __init__(self, data_pin, units_pin, timeout=1.0):
@@ -60,19 +66,18 @@ class Scale:
         """
         self.timeout = timeout
         # set up the toggle pin
-        self.units_pin = DigitalInOut(units_pin)
-        self.units_pin.switch_to_output()
+        self.units_pin = units_pin
+        # set up the dymo data pin
         self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
-        self.tare = False
-        self.stable = None
-        self.units = None
 
     @property
     def weight(self):
         """Weight in grams"""
-        weight = self.get_scale_data()
-        self.units = 'g'
-        return weight
+        reading = self.get_scale_data()
+        if reading.units == OUNCES:
+            reading.weight *= 28.35
+        reading.units = GRAMS
+        return reading
 
     def toggle_unit_button(self, switch_units=False):
         """Toggles the unit button on the dymo.
@@ -134,17 +139,15 @@ class Scale:
         if data_bytes[8] != 0x1C or data_bytes[9] != 0 or data_bytes[10] \
         or data_bytes[11] != 0:
             raise RuntimeError("Bad data capture")
-
+        reading = ScaleReading()
         # parse out the data_bytes
-        self.stable = data_bytes[2] & 0x4
-        self.units = data_bytes[3]
-        weight = data_bytes[5] + (data_bytes[6] << 8)
+        reading.stable = data_bytes[2] & 0x4
+        reading.units = data_bytes[3]
+        reading.weight = data_bytes[5] + (data_bytes[6] << 8)
         if data_bytes[2] & 0x1:
-            self.tare = True
-            weight *= -1
-        elif self.units == OUNCES:
+            reading.weight *= -1
+        if reading.units == OUNCES:
             if data_bytes[4] & 0x80:
-                self.tare = True
                 data_bytes[4] -= 0x100
-            #weight *= 10 ** data_bytes[4]
-        return weight
+            reading.weight *= 10 ** data_bytes[4]
+        return reading
