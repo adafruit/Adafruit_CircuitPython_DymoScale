@@ -63,6 +63,7 @@ class Scale:
         self.units_pin = DigitalInOut(units_pin)
         self.units_pin.switch_to_output()
         self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
+        self.tare = False
         self.stable = None
         self.units = None
 
@@ -141,11 +142,11 @@ class Scale:
         self.units = data_bytes[3]
         weight = data_bytes[5] + (data_bytes[6] << 8)
         if data_bytes[2] & 0x1:
+            self.tare = True
             weight *= -1
-            print('Tare - press the tare button to reset the scale to zero.')
         elif self.units == OUNCES:
             if data_bytes[4] & 0x80:
+                self.tare = True
                 data_bytes[4] -= 0x100
-                print('Tare - press the tare button to reset the scale to zero.')
             weight *= 10 ** data_bytes[4]
         return weight
