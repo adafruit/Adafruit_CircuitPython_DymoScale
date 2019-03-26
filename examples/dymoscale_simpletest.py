@@ -5,17 +5,10 @@ from adafruit_dymoscale import Scale
 dymo = Scale(board.D3, board.D4)
 
 while True:
-    dymo.get_scale_data()
-    if dymo.units == 'oz':
-        text = "%0.1f oz" % dymo.weight
-    if dymo.units == 'g':
-        text = "%0.1f g" % dymo.weight
-    print(text)
-
+    print("{:0.1f}  {}".format(dymo.weight, dymo.units))
     # to avoid sleep mode, we'll toggle the units pin.
-
-    # if we don't want to switch the unit on the next read:
+    # if we don't want to switch the units on the next read...
     dymo.toggle_unit_button()
 
-    # if we want to switch the measurement unit on the next read
-    # dymo.toggle_unit_button(switch_unit=True)
+    # if we do want to switch the units on the next read...
+    # dymo.toggle_unit_button(switch_units=True)
