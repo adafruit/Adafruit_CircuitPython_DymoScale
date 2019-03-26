@@ -88,7 +88,7 @@ class Scale:
         while toggle_times < toggle_amt:
             self.units_pin.value ^= 1
             time.sleep(2)
-            toggle_times+=1
+            toggle_times += 1
 
     def get_scale_data(self):
         """Read a pulse of SPI data on a pin that corresponds to DYMO scale
@@ -102,18 +102,20 @@ class Scale:
             if (time.monotonic() - timestamp) > self.timeout:
                 raise RuntimeError("Timed out waiting for data - is the scale turned on?")
         self.dymo.pause()
-        bits = [0] * 96   # there are 12 bytes = 96 bits of data
-        bit_idx = 0       # we will count a bit at a time
-        bit_val = False   # first pulses will be LOW
+        bits = [0] * 96 # there are 12 bytes = 96 bits of data
+        bit_idx = 0 # we will count a bit at a time
+        bit_val = False # first pulses will be LOW
         for i in range(len(self.dymo)):
             if self.dymo[i] == 65535: # check for the pulse between transmits
                 break
-            num_bits = int(self.dymo[i] / PULSE_WIDTH + 0.5)  # ~14KHz == ~7.5us per clock
-            for bit in range(num_bits):
+            num_bits = int(self.dymo[i] / PULSE_WIDTH + 0.5) # ~14KHz == ~7.5us per clock
+            bit = 0
+            while bit < num_bits:
                 bits[bit_idx] = bit_val
                 bit_idx += 1
-                if bit_idx == 96:      # we have read all the data we wanted
+                if bit_idx == 96: # we have read all the data we wanted
                     break
+                bit += 1
             bit_val = not bit_val
         data_bytes = [0] * 12 # alllocate data array
         for byte_n in range(12):
