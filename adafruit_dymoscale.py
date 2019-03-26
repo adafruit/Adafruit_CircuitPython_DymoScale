@@ -63,28 +63,35 @@ class Scale:
         self.units_pin = DigitalInOut(units_pin)
         self.units_pin.switch_to_output()
         self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
-        # units we're measuring
-        self.units = None
-        # is the measurement stable?
         self.stable = None
-        # the weight of what we're measuring
-        self.weight = None
+        self.units = None
 
-    def toggle_unit_button(self, switch_unit=False):
+    @property
+    def weight(self):
+        """Weight in grams"""
+        weight = self.get_scale_data()
+        #print('debugg: ', weight)
+        if self.units == OUNCES:
+            weight = weight *  28.35
+            self.units = 'oz'
+        elif self.units == GRAMS:
+            self.units = 'g'
+        return weight
+
+    def toggle_unit_button(self, switch_units=False):
         """Toggles the unit button on the dymo.
-        :param bool switch_unit: Simulates pressing the unit button.
+        :param bool switch_units: Simulates pressing the units button.
         """
-        if switch_unit: # press the toggle button once
-            self.units_pin.value = 1
-            time.sleep(2)
-            self.units_pin.value = 0
-            time.sleep(2)
+        toggle_times = 0
+        if switch_units: # press the button once
+            toggle_amt = 2
         else: # toggle and preserve current unit state
-            for toggle in range(2):
-                self.units_pin.value = 1
-                time.sleep(2)
-                self.units_pin.value = 0
-                time.sleep(2)
+            toggle_amt = 4
+        while toggle_times < toggle_amt:
+            self.units_pin.value ^= 1
+            print('toggle: ', self.units_pin.value)
+            time.sleep(2)
+            toggle_times+=1
 
     def get_scale_data(self):
         """Read a pulse of SPI data on a pin that corresponds to DYMO scale
@@ -125,18 +132,17 @@ class Scale:
         if data_bytes[8] != 0x1C or data_bytes[9] != 0 or data_bytes[10] \
         or data_bytes[11] != 0:
             raise RuntimeError("Bad data capture")
+
         # parse out the data_bytes
         self.stable = data_bytes[2] & 0x4
         self.units = data_bytes[3]
-        self.weight = data_bytes[5] + (data_bytes[6] << 8)
+        weight = data_bytes[5] + (data_bytes[6] << 8)
         if data_bytes[2] & 0x1:
-            self.weight *= -1
+            weight *= -1
             print('Tare - press the tare button to reset the scale to zero.')
         if self.units == OUNCES:
             if data_bytes[4] & 0x80:
                 data_bytes[4] -= 0x100
                 print('Tare - press the tare button to reset the scale to zero.')
-            self.weight *= 10 ** data_bytes[4]
-            self.units = "oz"
-        elif self.units == GRAMS:
-            self.units = "g"
+            weight *= 10 ** data_bytes[4]
+        return weight
