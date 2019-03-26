@@ -71,9 +71,8 @@ class Scale:
         """Weight in grams"""
         weight = self.get_scale_data()
         if self.units == OUNCES:
-            self.units = 'oz'
-        elif self.units == GRAMS:
-            self.units = 'g'
+            weight *= 28.35
+        self.units = 'g'
         return weight
 
     def toggle_unit_button(self, switch_units=False):
