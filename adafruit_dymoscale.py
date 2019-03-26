@@ -71,8 +71,6 @@ class Scale:
     def weight(self):
         """Weight in grams"""
         weight = self.get_scale_data()
-        if self.units == OUNCES:
-            weight *= 28.35
         self.units = 'g'
         return weight
 
@@ -148,5 +146,5 @@ class Scale:
             if data_bytes[4] & 0x80:
                 self.tare = True
                 data_bytes[4] -= 0x100
-            weight *= 10 ** data_bytes[4]
+            #weight *= 10 ** data_bytes[4]
         return weight
