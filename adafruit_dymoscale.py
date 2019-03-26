@@ -90,9 +90,9 @@ class Scale:
             time.sleep(2)
             toggle_times += 1
 
-    def get_scale_data(self):
-        """Read a pulse of SPI data on a pin that corresponds to DYMO scale
-        output protocol (12 bytes of data at about 14KHz), timeout is in seconds
+    def _read_pulse(self):
+        """Reads a pulse of SPI data on a pin that corresponds to DYMO scale
+        output protocol (12 bytes of data at about 14KHz).
         """
         timestamp = time.monotonic()
         self.dymo.pause()
@@ -102,6 +102,11 @@ class Scale:
             if (time.monotonic() - timestamp) > self.timeout:
                 raise RuntimeError("Timed out waiting for data - is the scale turned on?")
         self.dymo.pause()
+
+    def get_scale_data(self):
+        """Reads a pulse of SPI data and analyzes the resulting data.
+        """
+        self._read_pulse()
         bits = [0] * 96 # there are 12 bytes = 96 bits of data
         bit_idx = 0 # we will count a bit at a time
         bit_val = False # first pulses will be LOW
@@ -139,7 +144,7 @@ class Scale:
         if data_bytes[2] & 0x1:
             weight *= -1
             print('Tare - press the tare button to reset the scale to zero.')
-        if self.units == OUNCES:
+        elif self.units == OUNCES:
             if data_bytes[4] & 0x80:
                 data_bytes[4] -= 0x100
                 print('Tare - press the tare button to reset the scale to zero.')
