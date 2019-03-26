@@ -59,11 +59,17 @@ Initialize the scale by passing it a data pin and a pin to toggle the units butt
 
     dymo = Scale(board.D3, board.D4)
 
-Obtain data from the scale:
+Get the item's weight from the scale:
 
 .. code-block:: python
 
-    dymo.get_scale_data()
+    dymo.weight
+
+Get the item's units from the scale:
+
+.. code-block:: python
+
+    dymo.units
 
 To toggle between units (simulate a button press):
 
