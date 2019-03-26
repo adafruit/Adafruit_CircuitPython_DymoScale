@@ -70,9 +70,7 @@ class Scale:
     def weight(self):
         """Weight in grams"""
         weight = self.get_scale_data()
-        #print('debugg: ', weight)
         if self.units == OUNCES:
-            weight = weight *  28.35
             self.units = 'oz'
         elif self.units == GRAMS:
             self.units = 'g'
@@ -89,7 +87,6 @@ class Scale:
             toggle_amt = 4
         while toggle_times < toggle_amt:
             self.units_pin.value ^= 1
-            print('toggle: ', self.units_pin.value)
             time.sleep(2)
             toggle_times+=1
 
