@@ -133,7 +133,7 @@ class DYMOScale:
                 the_byte |= bits[byte_n*8 + bit_n]
             data_bytes[byte_n] = the_byte
         # do some very basic data checking
-        if data_bytes[0] != 3 and data_bytes[0] != 2: # check the MSB (differs between DYMO scale models)
+        if data_bytes[0] != 3 and data_bytes[0] != 2:
             raise RuntimeError("Bad data capture")
         if data_bytes[1] != 3 or data_bytes[7] != 4 or data_bytes[8] != 0x1C:
             raise RuntimeError("Bad data capture")
