@@ -15,6 +15,7 @@ Introduction
 
 CircuitPython interface for `DYMO <http://www.dymo.com/en-US>`_ postage scales.
 
+NOTE: This library will not work on embedded linux, only on microcontrollers.
 
 Dependencies
 =============
