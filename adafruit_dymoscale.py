@@ -41,8 +41,8 @@ import time
 from pulseio import PulseIn
 from micropython import const
 
-OUNCES = const(0x0B)   # data in weight is in ounces
-GRAMS = const(0x02)    # data in weight is in grams
+OUNCES = const(0x0B)  # data in weight is in ounces
+GRAMS = const(0x02)  # data in weight is in grams
 PULSE_WIDTH = 72.5
 
 __version__ = "0.0.0-auto.0"
@@ -51,13 +51,16 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_DymoScale.git"
 # pylint: disable=too-few-public-methods
 class ScaleReading:
     """Dymo Scale Data"""
-    units = None           # what units we're measuring
-    stable = None          # is the measurement stable?
-    weight = None          # the weight!
+
+    units = None  # what units we're measuring
+    stable = None  # is the measurement stable?
+    weight = None  # the weight!
+
 
 class DYMOScale:
     """Interface to a DYMO postal scale.
     """
+
     def __init__(self, data_pin, units_pin, timeout=1.0):
         """Sets up a DYMO postal scale.
         :param ~pulseio.PulseIn data_pin: The data pin from the Dymo scale.
@@ -84,9 +87,9 @@ class DYMOScale:
         :param bool switch_units: Simulates pressing the units button.
         """
         toggle_times = 0
-        if switch_units: # press the button once
+        if switch_units:  # press the button once
             toggle_amt = 2
-        else: # toggle and preserve current unit state
+        else:  # toggle and preserve current unit state
             toggle_amt = 4
         while toggle_times < toggle_amt:
             self.units_pin.value ^= 1
@@ -103,34 +106,38 @@ class DYMOScale:
         self.dymo.resume()
         while len(self.dymo) < 35:
             if (time.monotonic() - timestamp) > self.timeout:
-                raise RuntimeError("Timed out waiting for data - is the scale turned on?")
+                raise RuntimeError(
+                    "Timed out waiting for data - is the scale turned on?"
+                )
         self.dymo.pause()
 
     def get_scale_data(self):
         """Reads a pulse of SPI data and analyzes the resulting data.
         """
         self._read_pulse()
-        bits = [0] * 96 # there are 12 bytes = 96 bits of data
-        bit_idx = 0 # we will count a bit at a time
-        bit_val = False # first pulses will be LOW
+        bits = [0] * 96  # there are 12 bytes = 96 bits of data
+        bit_idx = 0  # we will count a bit at a time
+        bit_val = False  # first pulses will be LOW
         for i in range(len(self.dymo)):
-            if self.dymo[i] == 65535: # check for the pulse between transmits
+            if self.dymo[i] == 65535:  # check for the pulse between transmits
                 break
-            num_bits = int(self.dymo[i] / PULSE_WIDTH + 0.5) # ~14KHz == ~7.5us per clock
+            num_bits = int(
+                self.dymo[i] / PULSE_WIDTH + 0.5
+            )  # ~14KHz == ~7.5us per clock
             bit = 0
             while bit < num_bits:
                 bits[bit_idx] = bit_val
                 bit_idx += 1
-                if bit_idx == 96: # we have read all the data we wanted
+                if bit_idx == 96:  # we have read all the data we wanted
                     break
                 bit += 1
             bit_val = not bit_val
-        data_bytes = [0] * 12 # alllocate data array
+        data_bytes = [0] * 12  # alllocate data array
         for byte_n in range(12):
             the_byte = 0
             for bit_n in range(8):
                 the_byte <<= 1
-                the_byte |= bits[byte_n*8 + bit_n]
+                the_byte |= bits[byte_n * 8 + bit_n]
             data_bytes[byte_n] = the_byte
         # do some very basic data checking
         if data_bytes[0] != 3 and data_bytes[0] != 2:
