@@ -17,7 +17,7 @@ while True:
     print(text)
     # to avoid sleep mode, toggle the units pin every 2 mins.
     if (time.monotonic() - time_stamp) > 120:
-        print('toggling units button...')
+        print("toggling units button...")
         dymo.toggle_unit_button()
         # reset the time
         time_stamp = time.monotonic()
