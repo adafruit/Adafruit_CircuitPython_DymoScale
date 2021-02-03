@@ -1,24 +1,7 @@
-# The MIT License (MIT)
+# SPDX-FileCopyrightText: 2019 ladyada for Adafruit Industries
 #
-# Copyright (c) 2019 ladyada for Adafruit Industries
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# SPDX-License-Identifier: MIT
+
 """
 `adafruit_dymoscale`
 ================================================================================
@@ -58,8 +41,7 @@ class ScaleReading:
 
 
 class DYMOScale:
-    """Interface to a DYMO postal scale.
-    """
+    """Interface to a DYMO postal scale."""
 
     def __init__(self, data_pin, units_pin, timeout=1.0):
         """Sets up a DYMO postal scale.
@@ -112,8 +94,7 @@ class DYMOScale:
         self.dymo.pause()
 
     def get_scale_data(self):
-        """Reads a pulse of SPI data and analyzes the resulting data.
-        """
+        """Reads a pulse of SPI data and analyzes the resulting data."""
         self._read_pulse()
         bits = [0] * 96  # there are 12 bytes = 96 bits of data
         bit_idx = 0  # we will count a bit at a time
