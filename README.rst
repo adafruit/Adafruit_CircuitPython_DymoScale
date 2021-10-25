@@ -89,6 +89,11 @@ To toggle the unit button, but preserve the unit displayed:
     dymo.toggle_unit_button()
 
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/dymoscale/en/latest/>`_.
+
 Contributing
 ============
 
