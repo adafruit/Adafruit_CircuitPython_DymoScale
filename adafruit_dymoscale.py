@@ -99,12 +99,10 @@ class DYMOScale:
         bits = [0] * 96  # there are 12 bytes = 96 bits of data
         bit_idx = 0  # we will count a bit at a time
         bit_val = False  # first pulses will be LOW
-        for i in range(len(self.dymo)):
-            if self.dymo[i] == 65535:  # check for the pulse between transmits
+        for i in self.dymo:
+            if i == 65535:  # check for the pulse between transmits
                 break
-            num_bits = int(
-                self.dymo[i] / PULSE_WIDTH + 0.5
-            )  # ~14KHz == ~7.5us per clock
+            num_bits = int(i / PULSE_WIDTH + 0.5)  # ~14KHz == ~7.5us per clock
             bit = 0
             while bit < num_bits:
                 bits[bit_idx] = bit_val
