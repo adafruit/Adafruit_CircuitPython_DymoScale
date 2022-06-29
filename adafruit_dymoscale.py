@@ -23,7 +23,7 @@ try:
     import typing
 except ImportError:
     pass
-    
+
 import time
 from pulseio import PulseIn
 from micropython import const
@@ -47,7 +47,12 @@ class ScaleReading:
 class DYMOScale:
     """Interface to a DYMO postal scale."""
 
-    def __init__(self, data_pin: pulseio.PulseIn, units_pin: digitalio.DigitalInOut, timeout: double =1.0) -> None:
+    def __init__(
+        self,
+        data_pin: pulseio.PulseIn,
+        units_pin: digitalio.DigitalInOut,
+        timeout: double = 1.0,
+    ) -> None:
         """Sets up a DYMO postal scale.
         :param ~pulseio.PulseIn data_pin: The data pin from the Dymo scale.
         :param ~digitalio.DigitalInOut units_pin: The grams/oz button from the Dymo scale.
@@ -68,7 +73,7 @@ class DYMOScale:
         reading.units = GRAMS
         return reading
 
-    def toggle_unit_button(self, switch_units: bool =False) -> None:
+    def toggle_unit_button(self, switch_units: bool = False) -> None:
         """Toggles the unit button on the dymo.
         :param bool switch_units: Simulates pressing the units button.
         """
