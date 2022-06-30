@@ -21,6 +21,7 @@ Implementation Notes
 """
 
 import time
+import microcontroller
 from pulseio import PulseIn
 from micropython import const
 
@@ -45,8 +46,8 @@ class DYMOScale:
 
     def __init__(
         self,
-        data_pin: int,
-        units_pin: int,
+        data_pin: microcontroller.pin,
+        units_pin: microcontroller.pin,
         timeout: float = 1.0,
     ) -> None:
         """Sets up a DYMO postal scale.
