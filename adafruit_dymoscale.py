@@ -21,6 +21,7 @@ Implementation Notes
 """
 try:
     import typing
+    import microcontroller
 except ImportError:
     pass
 
@@ -49,9 +50,9 @@ class DYMOScale:
 
     def __init__(
         self,
-        data_pin: pulseio.PulseIn,
-        units_pin: digitalio.DigitalInOut,
-        timeout: double = 1.0,
+        data_pin: microcontroller.pin,
+        units_pin: microcontroller.pin,
+        timeout: float = 1.0,
     ) -> None:
         """Sets up a DYMO postal scale.
         :param ~pulseio.PulseIn data_pin: The data pin from the Dymo scale.
