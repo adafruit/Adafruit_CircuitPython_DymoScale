@@ -19,11 +19,6 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 """
-try:
-    import typing
-    import microcontroller
-except ImportError:
-    pass
 
 import time
 from pulseio import PulseIn
@@ -50,8 +45,8 @@ class DYMOScale:
 
     def __init__(
         self,
-        data_pin: microcontroller.pin,
-        units_pin: microcontroller.pin,
+        data_pin: int,
+        units_pin: int,
         timeout: float = 1.0,
     ) -> None:
         """Sets up a DYMO postal scale.
