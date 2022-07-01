@@ -20,6 +20,13 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 """
 
+try:
+    import typing  # pylint: disable=unused-import
+    from digitalio import DigitalInOut
+    import microcontroller
+except ImportError:
+    pass
+
 import time
 from pulseio import PulseIn
 from micropython import const
@@ -43,7 +50,12 @@ class ScaleReading:
 class DYMOScale:
     """Interface to a DYMO postal scale."""
 
-    def __init__(self, data_pin, units_pin, timeout=1.0):
+    def __init__(
+        self,
+        data_pin: microcontroller.Pin,
+        units_pin: DigitalInOut,
+        timeout: float = 1.0,
+    ) -> None:
         """Sets up a DYMO postal scale.
         :param ~pulseio.PulseIn data_pin: The data pin from the Dymo scale.
         :param ~digitalio.DigitalInOut units_pin: The grams/oz button from the Dymo scale.
@@ -56,7 +68,7 @@ class DYMOScale:
         self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
 
     @property
-    def weight(self):
+    def weight(self) -> ScaleReading:
         """Weight in grams"""
         reading = self.get_scale_data()
         if reading.units == OUNCES:
@@ -64,7 +76,7 @@ class DYMOScale:
         reading.units = GRAMS
         return reading
 
-    def toggle_unit_button(self, switch_units=False):
+    def toggle_unit_button(self, switch_units: bool = False) -> None:
         """Toggles the unit button on the dymo.
         :param bool switch_units: Simulates pressing the units button.
         """
@@ -78,7 +90,7 @@ class DYMOScale:
             time.sleep(2)
             toggle_times += 1
 
-    def _read_pulse(self):
+    def _read_pulse(self) -> None:
         """Reads a pulse of SPI data on a pin that corresponds to DYMO scale
         output protocol (12 bytes of data at about 14KHz).
         """
@@ -93,7 +105,7 @@ class DYMOScale:
                 )
         self.dymo.pause()
 
-    def get_scale_data(self):
+    def get_scale_data(self) -> ScaleReading:
         """Reads a pulse of SPI data and analyzes the resulting data."""
         self._read_pulse()
         bits = [0] * 96  # there are 12 bytes = 96 bits of data
