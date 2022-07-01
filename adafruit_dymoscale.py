@@ -20,8 +20,14 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 """
 
+try:
+    import typing  # pylint: disable=unused-import
+    from digitalio import DigitalInOut
+    import microcontroller
+except ImportError:
+    pass
+
 import time
-import microcontroller
 from pulseio import PulseIn
 from micropython import const
 
@@ -46,8 +52,8 @@ class DYMOScale:
 
     def __init__(
         self,
-        data_pin: microcontroller.pin,
-        units_pin: microcontroller.pin,
+        data_pin: microcontroller.Pin,
+        units_pin: DigitalInOut,
         timeout: float = 1.0,
     ) -> None:
         """Sets up a DYMO postal scale.
