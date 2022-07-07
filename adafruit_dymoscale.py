@@ -53,7 +53,7 @@ class DYMOScale:
     def __init__(
         self,
         data_pin: microcontroller.Pin,
-        units_pin: DigitalInOut,
+        units_dio: DigitalInOut,
         timeout: float = 1.0,
     ) -> None:
         """Sets up a DYMO postal scale.
@@ -63,7 +63,7 @@ class DYMOScale:
         """
         self.timeout = timeout
         # set up the toggle pin
-        self.units_pin = units_pin
+        self.units_dio = units_dio
         # set up the dymo data pin
         self.dymo = PulseIn(data_pin, maxlen=96, idle_state=True)
 
@@ -86,7 +86,7 @@ class DYMOScale:
         else:  # toggle and preserve current unit state
             toggle_amt = 4
         while toggle_times < toggle_amt:
-            self.units_pin.value ^= 1
+            self.units_dio.value ^= 1
             time.sleep(2)
             toggle_times += 1
 
