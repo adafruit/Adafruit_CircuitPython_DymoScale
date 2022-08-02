@@ -13,6 +13,10 @@ Introduction
     :target: https://github.com/adafruit/Adafruit_CircuitPython_DymoScale/actions/
     :alt: Build Status
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+    :alt: Code Style: Black
+
 CircuitPython interface for `DYMO <http://www.dymo.com/en-US>`_ postage scales.
 
 NOTE: This library will not work on embedded linux, only on microcontrollers.
