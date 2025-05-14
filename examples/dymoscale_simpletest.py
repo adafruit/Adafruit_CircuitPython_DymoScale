@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 import digitalio
+
 import adafruit_dymoscale
 
 # initialize the dymo scale
@@ -16,7 +18,7 @@ time_stamp = time.monotonic()
 
 while True:
     reading = dymo.weight
-    text = "{} g".format(reading.weight)
+    text = f"{reading.weight} g"
     print(text)
     # to avoid sleep mode, toggle the units pin every 2 mins.
     if (time.monotonic() - time_stamp) > 120:
