@@ -21,15 +21,17 @@ Implementation Notes
 """
 
 try:
-    import typing  # pylint: disable=unused-import
-    from digitalio import DigitalInOut
+    import typing
+
     import microcontroller
+    from digitalio import DigitalInOut
 except ImportError:
     pass
 
 import time
-from pulseio import PulseIn
+
 from micropython import const
+from pulseio import PulseIn
 
 OUNCES = const(0x0B)  # data in weight is in ounces
 GRAMS = const(0x02)  # data in weight is in grams
@@ -39,7 +41,6 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_DymoScale.git"
 
 
-# pylint: disable=too-few-public-methods
 class ScaleReading:
     """Dymo Scale Data"""
 
@@ -101,9 +102,7 @@ class DYMOScale:
         self.dymo.resume()
         while len(self.dymo) < 35:
             if (time.monotonic() - timestamp) > self.timeout:
-                raise RuntimeError(
-                    "Timed out waiting for data - is the scale turned on?"
-                )
+                raise RuntimeError("Timed out waiting for data - is the scale turned on?")
         self.dymo.pause()
 
     def get_scale_data(self) -> ScaleReading:
